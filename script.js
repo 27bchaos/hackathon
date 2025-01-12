@@ -78,16 +78,17 @@ function increaseCounter() {
     clickCount++;
     updateCounterDisplay();
     setCookie('clickCount', clickCount.toString(), 7);
-    saveScore('Click Counter', clickCount);
+    saveScore('Click Counter', clickCount, true); // Ensure Click Counter matches
 }
 
 function resetCounter() {
     clickCount = 0;
     updateCounterDisplay();
     setCookie('clickCount', '0', 7);
+    saveScore('Click Counter', 0, true);
 }
 
-function saveScore(game, score) {
+function saveScore(game, score, isOverwrite = false) {
     try {
         if (!playerNameSet) return;
 
@@ -106,8 +107,8 @@ function saveScore(game, score) {
         );
 
         if (playerIndex !== -1) {
-            if (game === 'Click Counter') {
-                savedScores[game][playerIndex].score = score;
+            if (isOverwrite) {
+                savedScores[game][playerIndex].score = score; // Overwrite for Click Counter
             } else {
                 savedScores[game][playerIndex].score += score;
             }
