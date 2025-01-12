@@ -4,36 +4,9 @@ let playerNameSet = false;
 let numberToGuess = Math.floor(Math.random() * 100) + 1;
 let guessAttempts = 0;
 
-// Get a cookie by name
-function getCookie(name) {
-    try {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) {
-            const cookieValue = parts.pop().split(';').shift();
-            return decodeURIComponent(cookieValue);
-        }
-        return null;
-    } catch (error) {
-        console.error('Error reading cookie:', error);
-        return null;
-    }
-}
-
-// Set a cookie with a name, value, and expiry date (in days)
-function setCookie(name, value, days) {
-    try {
-        const expires = new Date();
-        expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
-        document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires.toUTCString()}; path=/; SameSite=Strict`;
-    } catch (error) {
-        console.error('Error setting cookie:', error);
-    }
-}
-
-// Load click count from cookies
+// Load click count from localStorage
 function loadClickCount() {
-    const savedClickCount = getCookie('clickCount');
+    const savedClickCount = localStorage.getItem('clickCount');
     if (savedClickCount !== null) {
         clickCount = parseInt(savedClickCount, 10);
         if (isNaN(clickCount)) clickCount = 0;
@@ -65,6 +38,7 @@ function playGame(playerChoice) {
         (playerChoice === 'scissors' && computerChoice === 'paper')
     ) {
         result = `You win! ${capitalize(playerChoice)} beats ${capitalize(computerChoice)}.`;
+        saveScore('Rock, Paper, Scissors', 1);
     } else {
         result = `You lose! ${capitalize(computerChoice)} beats ${capitalize(playerChoice)}.`;
     }
@@ -84,60 +58,22 @@ function increaseCounter() {
 
     clickCount++;
     updateCounterDisplay();
+    localStorage.setItem('clickCount', clickCount.toString());
 }
 
 // Reset the Click Counter
 function resetCounter() {
-    // Only save the score when the user clicks reset counter
     saveScore('Click Counter', clickCount);
     clickCount = 0;
     updateCounterDisplay();
-    setCookie('clickCount', '0', 7);
+    localStorage.setItem('clickCount', '0');
 }
 
-// Number Guessing Game Logic
-function submitGuess() {
-    if (!playerNameSet) {
-        playerName = prompt("Enter your name for the Number Guessing Game:");
-        playerNameSet = true;
-    }
-
-    const playerGuess = parseInt(document.getElementById('number-guess-input').value, 10);
-    if (isNaN(playerGuess)) {
-        document.getElementById('number-guess-feedback').innerText = 'Please enter a valid number.';
-        return;
-    }
-
-    guessAttempts++;
-    if (playerGuess === numberToGuess) {
-        if (guessAttempts <= 5) {
-            document.getElementById('number-guess-feedback').innerText = `Congratulations ${playerName}! You guessed the number in ${guessAttempts} attempts.`;
-        } else {
-            document.getElementById('number-guess-feedback').innerText = `You guessed the number in ${guessAttempts} attempts, but it took more than 5 tries. You lose.`;
-        }
-        resetNumberGuessingGame();
-    } else if (playerGuess < numberToGuess) {
-        document.getElementById('number-guess-feedback').innerText = 'Too low! Try again.';
-    } else {
-        document.getElementById('number-guess-feedback').innerText = 'Too high! Try again.';
-    }
-}
-
-function resetNumberGuessingGame() {
-    numberToGuess = Math.floor(Math.random() * 100) + 1;
-    guessAttempts = 0;
-    document.getElementById('number-guess-input').value = '';
-}
-
-// Save Score to cookies
+// Save Score to localStorage
 function saveScore(game, score) {
     if (!playerNameSet) return;
 
-    let savedScores = {};
-    const savedScoresStr = getCookie('scores');
-    if (savedScoresStr) {
-        savedScores = JSON.parse(savedScoresStr);
-    }
+    let savedScores = JSON.parse(localStorage.getItem('scores')) || {};
 
     if (!savedScores[game]) {
         savedScores[game] = [];
@@ -160,14 +96,13 @@ function saveScore(game, score) {
         savedScores[game] = savedScores[game].slice(0, 10);
     }
 
-    setCookie('scores', JSON.stringify(savedScores), 7);
-    displayLeaderboard(); // Ensure the leaderboard is refreshed immediately after saving the score
+    localStorage.setItem('scores', JSON.stringify(savedScores));
+    displayLeaderboard();
 }
 
 // Display leaderboard
 function displayLeaderboard() {
-    const savedScoresStr = getCookie('scores');
-    const savedScores = savedScoresStr ? JSON.parse(savedScoresStr) : {};
+    const savedScores = JSON.parse(localStorage.getItem('scores')) || {};
 
     const rpsScores = savedScores['Rock, Paper, Scissors'] || [];
     document.getElementById('rps-leaderboard').innerHTML = `<h3>Rock, Paper, Scissors Leaderboard</h3>${
@@ -189,8 +124,6 @@ function displayLeaderboard() {
             ? numberGuessScores.map((player, i) => `<p>${i + 1}. ${player.playerName}: ${player.score} wins</p>`).join('')
             : '<p>No scores yet!</p>'
     }`;
-
-    document.getElementById('note').innerText = "Note: To save your wins, please click the 'Reset Counter' button.";
 }
 
 // Initialize the game
