@@ -57,3 +57,22 @@ input[type="number"] {
 .game-container {
     margin-top: 30px;
 }
+
+/* Leaderboard Section */
+.leaderboard-section {
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #990000;  /* Even darker red for leaderboard background */
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.leaderboard-section h3 {
+    color: #f1f1f1;  /* Light color for leaderboard headings */
+}
+
+.leaderboard-section p {
+    color: #f1f1f1;  /* Light color for leaderboard text */
+    font-size: 16px;
+    margin: 5px 0;
+}
