@@ -65,7 +65,7 @@ function playGame(playerChoice) {
     ) {
         result = `You win! ${capitalize(playerChoice)} beats ${capitalize(computerChoice)}.`;
         document.getElementById('result').innerText = `You chose: ${capitalize(playerChoice)}\nComputer chose: ${capitalize(computerChoice)}\n${result}`;
-        // Only save score if player wins
+        // Save score for each win, not just the first
         saveScore('Rock, Paper, Scissors', 1);
     } else {
         result = `You lose! ${capitalize(computerChoice)} beats ${capitalize(playerChoice)}.`;
@@ -120,12 +120,10 @@ function saveScore(game, score) {
         );
 
         if (playerIndex !== -1) {
-            // Update existing score if it's higher
-            if (game === 'Click Counter' || score > savedScores[game][playerIndex].score) {
-                savedScores[game][playerIndex].score = score;
-            }
+            // Update existing score (accumulate score if player wins again)
+            savedScores[game][playerIndex].score += score;
         } else {
-            // Add new player
+            // Add new player if not found
             savedScores[game].push({
                 playerName: playerName.trim(),
                 score: score
