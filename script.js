@@ -65,7 +65,6 @@ function playGame(playerChoice) {
         (playerChoice === 'scissors' && computerChoice === 'paper')
     ) {
         result = `You win! ${capitalize(playerChoice)} beats ${capitalize(computerChoice)}.`;
-        saveScore('Rock, Paper, Scissors', 1);
     } else {
         result = `You lose! ${capitalize(computerChoice)} beats ${capitalize(playerChoice)}.`;
     }
@@ -85,11 +84,11 @@ function increaseCounter() {
 
     clickCount++;
     updateCounterDisplay();
-    setCookie('clickCount', clickCount.toString(), 7);
 }
 
 // Reset the Click Counter
 function resetCounter() {
+    // Only save the score when the user clicks reset counter
     saveScore('Click Counter', clickCount);
     clickCount = 0;
     updateCounterDisplay();
@@ -113,7 +112,6 @@ function submitGuess() {
     if (playerGuess === numberToGuess) {
         if (guessAttempts <= 5) {
             document.getElementById('number-guess-feedback').innerText = `Congratulations ${playerName}! You guessed the number in ${guessAttempts} attempts.`;
-            saveScore('Number Guessing Game', 1);
         } else {
             document.getElementById('number-guess-feedback').innerText = `You guessed the number in ${guessAttempts} attempts, but it took more than 5 tries. You lose.`;
         }
@@ -191,6 +189,8 @@ function displayLeaderboard() {
             ? numberGuessScores.map((player, i) => `<p>${i + 1}. ${player.playerName}: ${player.score} wins</p>`).join('')
             : '<p>No scores yet!</p>'
     }`;
+
+    document.getElementById('note').innerText = "Note: To save your wins, please click the 'Reset Counter' button.";
 }
 
 // Initialize the game
@@ -204,9 +204,4 @@ document.addEventListener('DOMContentLoaded', () => {
         clickButton.removeEventListener('click', increaseCounter);
         clickButton.addEventListener('click', increaseCounter);
     }
-
-    // Update leaderboard every 5 seconds
-    setInterval(() => {
-        displayLeaderboard(); // Update leaderboard every 5 seconds
-    }, 5000);
 });
