@@ -3,7 +3,7 @@ let playerName = '';
 let playerNameSet = false;
 let numberToGuess = Math.floor(Math.random() * 100) + 1;
 let guessAttempts = 0;
-let isClickSubmitted = false;  // Track if click count has been submitted
+let isClickSubmitted = false;  // Ensure no multiple increments
 
 // Get a cookie by name
 function getCookie(name) {
@@ -48,7 +48,7 @@ function updateCounterDisplay() {
     document.getElementById('counter').innerText = `Clicks: ${clickCount}`;
 }
 
-// Rock, Paper, Scissors Game logic
+// Play the Rock, Paper, Scissors game
 function playGame(playerChoice) {
     if (!playerNameSet) {
         playerName = prompt("Enter your name for the game:");
@@ -79,32 +79,32 @@ function capitalize(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-// Increase click counter
+// Increase the click counter
 function increaseCounter() {
     if (!playerNameSet) {
         playerName = prompt("Enter your name for the Click Counter game:");
         playerNameSet = true;
     }
 
-    // Increment the click count only if it hasn't been submitted already
+    // Allow increment only if the counter hasn't been submitted yet
     if (!isClickSubmitted) {
         clickCount++;
         updateCounterDisplay();
         setCookie('clickCount', clickCount.toString(), 7);
-        saveScore('Click Counter', clickCount);  // Save score to leaderboard
-        isClickSubmitted = true; // Set flag to true to prevent multiple submissions
+        saveScore('Click Counter', clickCount); // Only submit the score after click
+        isClickSubmitted = true;  // Prevent further increments until reset
     }
 }
 
-// Reset click counter
+// Reset the click counter
 function resetCounter() {
     clickCount = 0;
     updateCounterDisplay();
     setCookie('clickCount', '0', 7);
-    isClickSubmitted = false;  // Allow score to be saved again
+    isClickSubmitted = false;  // Allow new clicks after reset
 }
 
-// Submit guess for the Number Guessing Game
+// Submit the guess for the number guessing game
 function submitGuess() {
     if (!playerNameSet) {
         playerName = prompt("Enter your name for the Number Guessing Game:");
@@ -129,14 +129,14 @@ function submitGuess() {
     }
 }
 
-// Reset the Number Guessing Game
+// Reset the number guessing game
 function resetNumberGuessingGame() {
     numberToGuess = Math.floor(Math.random() * 100) + 1;
     guessAttempts = 0;
     document.getElementById('number-guess-input').value = '';
 }
 
-// Save the score to cookies
+// Save score to cookies
 function saveScore(game, score) {
     if (!playerNameSet) return;
 
@@ -196,7 +196,7 @@ function displayLeaderboard() {
     }`;
 }
 
-// Initialize the game on page load
+// Initialize the page
 document.addEventListener('DOMContentLoaded', () => {
     loadClickCount();
     displayLeaderboard();
