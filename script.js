@@ -3,6 +3,7 @@ let playerName = '';
 let playerNameSet = false;
 let numberToGuess = Math.floor(Math.random() * 100) + 1;
 let guessAttempts = 0;
+let rpsWins = 0;  // Track Rock, Paper, Scissors Wins
 
 // Get a cookie by name
 function getCookie(name) {
@@ -65,8 +66,9 @@ function playGame(playerChoice) {
         (playerChoice === 'paper' && computerChoice === 'rock') ||
         (playerChoice === 'scissors' && computerChoice === 'paper')
     ) {
+        rpsWins++;  // Increment wins for Rock, Paper, Scissors
         result = `You win! ${capitalize(playerChoice)} beats ${capitalize(computerChoice)}.`;
-        saveScore('Rock, Paper, Scissors', 1);
+        saveScore('Rock, Paper, Scissors', rpsWins);
     } else {
         result = `You lose! ${capitalize(computerChoice)} beats ${capitalize(playerChoice)}.`;
     }
@@ -91,7 +93,7 @@ function increaseCounter() {
 
 // Reset the Click Counter
 function resetCounter() {
-    saveScore('Click Counter', clickCount);
+    saveScore('Click Counter', clickCount);  // Save click count to leaderboard
     clickCount = 0;
     updateCounterDisplay();
     setCookie('clickCount', '0', 7);
@@ -114,7 +116,7 @@ function submitGuess() {
     if (playerGuess === numberToGuess) {
         if (guessAttempts <= 5) {
             document.getElementById('number-guess-feedback').innerText = `Congratulations ${playerName}! You guessed the number in ${guessAttempts} attempts.`;
-            saveScore('Number Guessing Game', 1);
+            saveScore('Number Guessing Game', 1);  // Save win to leaderboard
         } else {
             document.getElementById('number-guess-feedback').innerText = `You guessed the number in ${guessAttempts} attempts, but it took more than 5 tries. You lose.`;
         }
@@ -151,20 +153,18 @@ function saveScore(game, score) {
     );
 
     if (playerIndex !== -1) {
-        if (savedScores[game][playerIndex].score < score) {
-            savedScores[game][playerIndex].score = score;
-        }
+        savedScores[game][playerIndex].score = score;  // Update score for the player
     } else {
         savedScores[game].push({ playerName: playerName.trim(), score });
     }
 
-    savedScores[game].sort((a, b) => b.score - a.score);
+    savedScores[game].sort((a, b) => b.score - a.score);  // Sort leaderboard by score
     if (savedScores[game].length > 10) {
-        savedScores[game] = savedScores[game].slice(0, 10);
+        savedScores[game] = savedScores[game].slice(0, 10);  // Keep top 10 scores
     }
 
-    setCookie('scores', JSON.stringify(savedScores), 7);
-    displayLeaderboard();
+    setCookie('scores', JSON.stringify(savedScores), 7);  // Save to cookie
+    displayLeaderboard();  // Update leaderboard
 }
 
 // Display leaderboard
