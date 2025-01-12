@@ -23,7 +23,7 @@
     <!-- Click Counter Game Section -->
     <div class="game-container">
         <h2>Click Counter</h2>
-        <button onclick="increaseCounter()">Click Me!</button>
+        <button id="clickButton">Click Me!</button>
         <p id="counter">Clicks: 0</p>
         <button onclick="resetCounter()">Reset Counter</button>
     </div>
@@ -40,17 +40,17 @@
     <div class="leaderboard-section">
         <div id="rps-leaderboard">
             <h3>Rock, Paper, Scissors Leaderboard</h3>
-            <p>No scores yet!</p>
+            <div class="scores"></div>
         </div>
         
         <div id="click-counter-leaderboard">
             <h3>Click Counter Leaderboard</h3>
-            <p>No scores yet!</p>
+            <div class="scores"></div>
         </div>
         
         <div id="number-guess-leaderboard">
             <h3>Number Guessing Game Leaderboard</h3>
-            <p>No scores yet!</p>
+            <div class="scores"></div>
         </div>
     </div>
 
