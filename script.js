@@ -86,11 +86,11 @@ function increaseCounter() {
     clickCount++;
     updateCounterDisplay();
     setCookie('clickCount', clickCount.toString(), 7);
-    saveScore('Click Counter', clickCount);
 }
 
 // Reset the Click Counter
 function resetCounter() {
+    saveScore('Click Counter', clickCount);
     clickCount = 0;
     updateCounterDisplay();
     setCookie('clickCount', '0', 7);
@@ -150,7 +150,9 @@ function saveScore(game, score) {
     );
 
     if (playerIndex !== -1) {
-        savedScores[game][playerIndex].score += score;
+        if (savedScores[game][playerIndex].score < score) {
+            savedScores[game][playerIndex].score = score;
+        }
     } else {
         savedScores[game].push({ playerName: playerName.trim(), score });
     }
@@ -195,4 +197,11 @@ function displayLeaderboard() {
 document.addEventListener('DOMContentLoaded', () => {
     loadClickCount();
     displayLeaderboard();
+
+    // Ensure click event listener is only added once
+    const clickButton = document.getElementById('clickButton');
+    if (clickButton) {
+        clickButton.removeEventListener('click', increaseCounter);
+        clickButton.addEventListener('click', increaseCounter);
+    }
 });
