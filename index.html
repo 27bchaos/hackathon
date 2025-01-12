@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rock, Paper, Scissors, Click Counter & Number Guessing Game</title>
+    <title>Rock, Paper, Scissors & Click Counter Game</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Rock, Paper, Scissors, Click Counter & Number Guessing Game</h1>
+    <h1>Rock, Paper, Scissors & Click Counter Game</h1>
 
     <!-- Rock, Paper, Scissors Game Section -->
     <div class="game-container">
@@ -20,7 +20,15 @@
         <div id="result"></div>
     </div>
 
-    <!-- Click Counter Game Section -->
+    <!-- Leaderboard Section for Rock, Paper, Scissors -->
+    <div class="leaderboard-section">
+        <div id="rps-leaderboard">
+            <h3>Rock, Paper, Scissors Leaderboard</h3>
+            <p>No scores yet!</p>
+        </div>
+    </div>
+
+    <!-- Click Counter Game Section (Moved to the bottom) -->
     <div class="game-container">
         <h2>Click Counter</h2>
         <button onclick="increaseCounter()">Click Me!</button>
@@ -29,28 +37,10 @@
         <div id="note">Note: To save your Click Counter score, please click the 'Reset Counter' button.</div>
     </div>
 
-    <!-- Number Guessing Game Section -->
-    <div class="game-container">
-        <h2>Number Guessing Game</h2>
-        <p id="number-guess-feedback">Guess a number between 1 and 100!</p>
-        <input type="number" id="number-guess-input" placeholder="Enter your guess" />
-        <button onclick="submitGuess()">Submit Guess</button>
-    </div>
-
-    <!-- Leaderboards Section -->
+    <!-- Leaderboard Section for Click Counter -->
     <div class="leaderboard-section">
-        <div id="rps-leaderboard">
-            <h3>Rock, Paper, Scissors Leaderboard</h3>
-            <p>No scores yet!</p>
-        </div>
-        
         <div id="click-counter-leaderboard">
             <h3>Click Counter Leaderboard</h3>
-            <p>No scores yet!</p>
-        </div>
-        
-        <div id="number-guess-leaderboard">
-            <h3>Number Guessing Game Leaderboard</h3>
             <p>No scores yet!</p>
         </div>
     </div>
