@@ -94,7 +94,6 @@ function resetCounter() {
     clickCount = 0;
     updateCounterDisplay();
     setCookie('clickCount', '0', 7);
-    displayLeaderboard(); // Ensure the leaderboard is updated after reset
 }
 
 // Number Guessing Game Logic
@@ -164,7 +163,7 @@ function saveScore(game, score) {
     }
 
     setCookie('scores', JSON.stringify(savedScores), 7);
-    displayLeaderboard();
+    displayLeaderboard(); // Ensure the leaderboard is refreshed immediately after saving the score
 }
 
 // Display leaderboard
@@ -207,5 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Update leaderboard every 5 seconds
-    setInterval(displayLeaderboard, 5000); // Update every 5 seconds
+    setInterval(() => {
+        displayLeaderboard(); // Update leaderboard every 5 seconds
+    }, 5000);
 });
