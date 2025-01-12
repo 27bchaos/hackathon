@@ -2,31 +2,24 @@ let clickCount = 0;
 let playerName = '';
 let playerNameSet = false;
 
+// Helper functions to handle cookies
 function getCookie(name) {
-    try {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`); 
-        if (parts.length === 2) {
-            const cookieValue = parts.pop().split(';').shift();
-            return decodeURIComponent(cookieValue);
-        }
-        return null;
-    } catch (error) {
-        console.error('Error reading cookie:', error);
-        return null;
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) {
+        const cookieValue = parts.pop().split(';').shift();
+        return decodeURIComponent(cookieValue);
     }
+    return null;
 }
 
 function setCookie(name, value, days) {
-    try {
-        const expires = new Date();
-        expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
-        document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires.toUTCString()}; path=/; SameSite=Strict`;
-    } catch (error) {
-        console.error('Error setting cookie:', error);
-    }
+    const expires = new Date();
+    expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+    document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires.toUTCString()}; path=/; SameSite=Strict`;
 }
 
+// Load the click count from cookies
 function loadClickCount() {
     const savedClickCount = getCookie('clickCount');
     if (savedClickCount !== null) {
@@ -36,45 +29,41 @@ function loadClickCount() {
     updateCounterDisplay();
 }
 
+// Update the counter display
 function updateCounterDisplay() {
     document.getElementById('counter').innerText = `Clicks: ${clickCount}`;
-    document.getElementById('click-message').innerText = ''; // Reset message each time
 }
 
+// Increase click count by 1
 function increaseCounter() {
     if (!playerNameSet) {
         playerName = prompt("Enter your name for the Click Counter game:");
         playerNameSet = true;
     }
 
-    // Add 1 to the click count
+    // Increment the click count by 1
     clickCount++;
 
     // Update display
     updateCounterDisplay();
 
-    // Set the updated click count to a cookie so it persists
+    // Store the updated click count in a cookie
     setCookie('clickCount', clickCount.toString(), 7);
 
-    // Display confirmation message after click
-    document.getElementById('click-message').innerText = 'Click registered!';
-
-    // Save the score to leaderboard
+    // Save the score to the leaderboard
     saveScore('Click Counter', 1);
 }
 
+// Reset the click counter
 function resetCounter() {
-    // Reset the counter
     clickCount = 0;
     updateCounterDisplay();
 
-    // Reset the cookie
+    // Clear the cookie
     setCookie('clickCount', '0', 7);
-
-    // Clear the click message
-    document.getElementById('click-message').innerText = '';
 }
 
+// Save the score to the leaderboard
 function saveScore(game, score) {
     if (!playerNameSet) return;
 
@@ -107,6 +96,7 @@ function saveScore(game, score) {
     displayLeaderboard();
 }
 
+// Display the leaderboard
 function displayLeaderboard() {
     const savedScoresStr = getCookie('scores');
     const savedScores = savedScoresStr ? JSON.parse(savedScoresStr) : {};
@@ -119,6 +109,7 @@ function displayLeaderboard() {
     }`;
 }
 
+// Initialize when the document is loaded
 document.addEventListener('DOMContentLoaded', () => {
     loadClickCount();
     displayLeaderboard();
