@@ -3,6 +3,7 @@ let playerName = '';
 let playerNameSet = false;
 let numberToGuess = Math.floor(Math.random() * 100) + 1;
 let guessAttempts = 0;
+let hasSavedClickCount = false; // To track if we have already saved the score after refresh
 
 // Get a cookie by name
 function getCookie(name) {
@@ -39,6 +40,7 @@ function loadClickCount() {
         if (isNaN(clickCount)) clickCount = 0;
     }
     updateCounterDisplay();
+    hasSavedClickCount = false; // Reset the flag
 }
 
 // Update the counter display
@@ -85,12 +87,15 @@ function increaseCounter() {
     }
 
     // Increase the counter by 1
-    clickCount++;
-    updateCounterDisplay();
-    setCookie('clickCount', clickCount.toString(), 7);
+    if (!hasSavedClickCount) {
+        clickCount++;
+        updateCounterDisplay();
+        setCookie('clickCount', clickCount.toString(), 7);
 
-    // Save the score only when the click count is updated
-    saveScore('Click Counter', clickCount);
+        // Save the score only once when the count changes
+        saveScore('Click Counter', clickCount);
+        hasSavedClickCount = true; // Ensure the score is not saved multiple times
+    }
 }
 
 // Reset click counter
@@ -98,6 +103,7 @@ function resetCounter() {
     clickCount = 0;
     updateCounterDisplay();
     setCookie('clickCount', '0', 7);
+    hasSavedClickCount = false; // Allow score saving after reset
 }
 
 // Submit guess for the Number Guessing Game
