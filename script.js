@@ -1,15 +1,16 @@
 let clickCount = 0;
-let playerName = ''; // To store the player's name for both games
-let playerNameSet = false; // To check if the player's name is already set
+let playerName = '';
+let playerNameSet = false;
+let currentNumber = 1;
+let countingGameActive = false;
 
-// Get a cookie by name
 function getCookie(name) {
     try {
         const value = `; ${document.cookie}`;
         const parts = value.split(`; ${name}=`);
         if (parts.length === 2) {
             const cookieValue = parts.pop().split(';').shift();
-            return decodeURIComponent(cookieValue); // Decode the cookie value
+            return decodeURIComponent(cookieValue);
         }
         return null;
     } catch (error) {
@@ -18,7 +19,6 @@ function getCookie(name) {
     }
 }
 
-// Set a cookie with a name, value, and expiry date (in days)
 function setCookie(name, value, days) {
     try {
         const expires = new Date();
@@ -29,7 +29,6 @@ function setCookie(name, value, days) {
     }
 }
 
-// Load click count from cookies
 function loadClickCount() {
     const savedClickCount = getCookie('clickCount');
     if (savedClickCount !== null) {
@@ -39,16 +38,14 @@ function loadClickCount() {
     updateCounterDisplay();
 }
 
-// Update counter display
 function updateCounterDisplay() {
     document.getElementById('counter').innerText = `Clicks: ${clickCount}`;
 }
 
-// Rock, Paper, Scissors Game Logic
 function playGame(playerChoice) {
     if (!playerNameSet) {
         playerName = prompt("Enter your name for the game:");
-        playerNameSet = true; // Set name flag
+        playerNameSet = true;
     }
 
     const choices = ['rock', 'paper', 'scissors'];
@@ -65,7 +62,6 @@ function playGame(playerChoice) {
     ) {
         result = `You win! ${capitalize(playerChoice)} beats ${capitalize(computerChoice)}.`;
         document.getElementById('result').innerText = `You chose: ${capitalize(playerChoice)}\nComputer chose: ${capitalize(computerChoice)}\n${result}`;
-        // Save score for each win, not just the first
         saveScore('Rock, Paper, Scissors', 1);
     } else {
         result = `You lose! ${capitalize(computerChoice)} beats ${capitalize(playerChoice)}.`;
@@ -77,11 +73,10 @@ function capitalize(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-// Click Counter Logic
 function increaseCounter() {
     if (!playerNameSet) {
         playerName = prompt("Enter your name for the Click Counter game:");
-        playerNameSet = true; // Set name flag
+        playerNameSet = true;
     }
 
     clickCount++;
@@ -90,69 +85,56 @@ function increaseCounter() {
     saveScore('Click Counter', clickCount);
 }
 
-// Reset the Click Counter
 function resetCounter() {
     clickCount = 0;
     updateCounterDisplay();
     setCookie('clickCount', '0', 7);
 }
 
-// Save Score to cookies
 function saveScore(game, score) {
     try {
-        if (!playerNameSet) return; // Avoid saving score before the name is set
+        if (!playerNameSet) return;
 
-        // Get existing scores
         let savedScores = {};
         const savedScoresStr = getCookie('scores');
         if (savedScoresStr) {
             savedScores = JSON.parse(savedScoresStr);
         }
 
-        // Initialize game array if needed
         if (!savedScores[game]) {
             savedScores[game] = [];
         }
 
-        // Check if player already exists
         const playerIndex = savedScores[game].findIndex(
             player => player.playerName.toLowerCase() === playerName.toLowerCase()
         );
 
         if (playerIndex !== -1) {
-            // Update existing score (accumulate score if player wins again)
             savedScores[game][playerIndex].score += score;
         } else {
-            // Add new player if not found
             savedScores[game].push({
                 playerName: playerName.trim(),
                 score: score
             });
         }
 
-        // Sort and limit to top 10 scores
         savedScores[game].sort((a, b) => b.score - a.score);
         if (savedScores[game].length > 10) {
             savedScores[game] = savedScores[game].slice(0, 10);
         }
 
-        // Save back to cookie
         setCookie('scores', JSON.stringify(savedScores), 7);
-
-        // Update display
         displayLeaderboard();
     } catch (error) {
         console.error('Error saving score:', error);
     }
 }
 
-// Display leaderboard
 function displayLeaderboard() {
     try {
         const savedScoresStr = getCookie('scores');
         const savedScores = savedScoresStr ? JSON.parse(savedScoresStr) : {};
 
-        // Display RPS leaderboard
         const rpsScores = savedScores['Rock, Paper, Scissors'] || [];
         let rpsLeaderboardHTML = '<h3>Rock, Paper, Scissors Leaderboard</h3>';
         if (rpsScores.length > 0) {
@@ -164,7 +146,6 @@ function displayLeaderboard() {
         }
         document.getElementById('rps-leaderboard').innerHTML = rpsLeaderboardHTML;
 
-        // Display Click Counter leaderboard
         const clickCounterScores = savedScores['Click Counter'] || [];
         let clickCounterLeaderboardHTML = '<h3>Click Counter Leaderboard</h3>';
         if (clickCounterScores.length > 0) {
@@ -175,12 +156,61 @@ function displayLeaderboard() {
             clickCounterLeaderboardHTML += '<p>No scores yet!</p>';
         }
         document.getElementById('click-counter-leaderboard').innerHTML = clickCounterLeaderboardHTML;
+
+        const countingScores = savedScores['Counting Game'] || [];
+        let countingLeaderboardHTML = '<h3>Counting Game Leaderboard</h3>';
+        if (countingScores.length > 0) {
+            countingLeaderboardHTML += countingScores
+                .map((player, index) => `<p>${index + 1}. ${player.playerName}: ${player.score} numbers</p>`)
+                .join('');
+        } else {
+            countingLeaderboardHTML += '<p>No scores yet!</p>';
+        }
+        document.getElementById('counting-leaderboard').innerHTML = countingLeaderboardHTML;
     } catch (error) {
         console.error('Error displaying leaderboard:', error);
     }
 }
 
-// Initialize the game
+function startCountingGame() {
+    if (!playerNameSet) {
+        playerName = prompt("Enter your name for the Counting Game:");
+        playerNameSet = true;
+    }
+
+    currentNumber = 1;
+    countingGameActive = true;
+    updateCountingGameDisplay();
+    document.getElementById('counting-result').innerText = "Game started! Start counting.";
+}
+
+function countNextNumber(number) {
+    if (!countingGameActive) {
+        document.getElementById('counting-result').innerText = "Please start the game first!";
+        return;
+    }
+
+    if (number === currentNumber) {
+        currentNumber++;
+        updateCountingGameDisplay();
+        document.getElementById('counting-result').innerText = `Correct! Next number is ${currentNumber}.`;
+
+        if (currentNumber > 100) {
+            countingGameActive = false;
+            saveScore('Counting Game', currentNumber - 1);
+            document.getElementById('counting-result').innerText = "Congratulations! You've completed the game.";
+        }
+    } else {
+        countingGameActive = false;
+        saveScore('Counting Game', currentNumber - 1);
+        document.getElementById('counting-result').innerText = `Game Over! You reached ${currentNumber - 1}.`;
+    }
+}
+
+function updateCountingGameDisplay() {
+    document.getElementById('counting-display').innerText = `Current Number: ${currentNumber}`;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     loadClickCount();
     displayLeaderboard();
