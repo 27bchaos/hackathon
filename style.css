@@ -3,13 +3,13 @@ body {
     background-color: #550000;  /* Dark Red background */
     margin: 0;
     padding: 0;
-    color: #f1f1f1;  /* Lighter text color for better contrast */
+    color: #f1f1f1;  /* Light gray text for contrast */
     text-align: center;
 }
 
 h1 {
     margin-top: 20px;
-    color: #ffcc00;  /* Lighter Yellow-Red for the header */
+    color: #ff0000;  /* Bright Red for the header */
     font-size: 36px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Shadow for better readability */
 }
@@ -17,7 +17,7 @@ h1 {
 .game-container {
     margin: 20px;
     padding: 20px;
-    background-color: #ff3333;  /* Red for game containers */
+    background-color: #cc0000;  /* Dark Red for game containers */
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
@@ -25,7 +25,7 @@ h1 {
 button {
     margin: 5px;
     padding: 12px 25px;
-    background-color: #ff3333;  /* Bright Red for buttons */
+    background-color: #ff0000;  /* Bright Red for buttons */
     border: none;
     color: white;
     font-size: 18px;
@@ -35,13 +35,13 @@ button {
 }
 
 button:hover {
-    background-color: #d10000;  /* Slightly darker red when hovering */
+    background-color: #b20000;  /* Slightly darker red when hovering */
 }
 
 #click-note {
     margin-top: 10px;
     font-size: 14px;
-    color: #f2f2f2;  /* Light gray color for note */
+    color: #f2f2f2;  /* Light gray for the note */
 }
 
 /* Input fields */
