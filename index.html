@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rock, Paper, Scissors & Click Counter Game</title>
+    <title>Rock, Paper, Scissors, Click Counter & Number Guessing Game</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Rock, Paper, Scissors & Click Counter</h1>
+    <h1>Rock, Paper, Scissors, Click Counter & Number Guessing Game</h1>
 
     <!-- Rock, Paper, Scissors Game Section -->
     <div class="game-container">
@@ -28,6 +28,14 @@
         <button onclick="resetCounter()">Reset Counter</button>
     </div>
 
+    <!-- Number Guessing Game Section -->
+    <div class="game-container">
+        <h2>Number Guessing Game</h2>
+        <p id="number-guess-feedback">Guess a number between 1 and 100!</p>
+        <input type="number" id="number-guess-input" placeholder="Enter your guess" />
+        <button onclick="submitGuess()">Submit Guess</button>
+    </div>
+
     <!-- Leaderboards Section -->
     <div class="leaderboard-section">
         <div id="rps-leaderboard">
@@ -37,6 +45,11 @@
         
         <div id="click-counter-leaderboard">
             <h3>Click Counter Leaderboard</h3>
+            <p>No scores yet!</p>
+        </div>
+        
+        <div id="number-guess-leaderboard">
+            <h3>Number Guessing Game Leaderboard</h3>
             <p>No scores yet!</p>
         </div>
     </div>
