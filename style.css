@@ -1,90 +1,80 @@
-/* General body styling */
+/* Basic Styling */
 body {
     font-family: Arial, sans-serif;
-    text-align: center;
-    padding: 50px;
-    background-color: #ff0000; /* Full red background */
-    color: white; /* White text for contrast */
+    background-color: #ff4d4d; /* Red background */
+    color: white;
     margin: 0;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    flex-direction: column;
+    padding: 20px;
+    text-align: center;
 }
 
-/* Heading styles */
-h1, h2, h3 {
-    color: #fff; /* White headings */
+h1 {
+    font-size: 2.5em;
     margin-bottom: 20px;
 }
 
-/* Container for game-related sections */
-.game-container {
-    background-color: #cc0000; /* Darker red container background */
-    padding: 20px;
-    border-radius: 10px;
-    margin: 20px auto;
-    max-width: 600px;
-    width: 100%;
-    box-shadow: 0 0 15px rgba(255, 0, 0, 0.3); /* Red shadow effect */
+h2 {
+    font-size: 2em;
+    margin-top: 20px;
 }
 
-/* Button styles */
+/* Game Section Styling */
+.game-container {
+    background-color: #fff;
+    color: #333;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
 button {
-    background-color: #ff0000; /* Bright red button background */
+    background-color: #ff4d4d;
     color: white;
     border: none;
     padding: 10px 20px;
-    margin: 10px;
+    margin: 5px;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 1rem;
+    font-size: 1em;
     transition: background-color 0.3s;
 }
 
-/* Button hover effect */
 button:hover {
-    background-color: #cc0000; /* Dark red on hover */
+    background-color: #ff3333;
 }
 
-/* Styling for the result and counter display */
-#result, #counter {
-    margin-top: 20px;
-    font-size: 1.5rem;
-    color: white; /* White text for result and counter */
+/* Feedback and Counter Styling */
+#counter, #number-guess-feedback {
+    font-size: 1.5em;
+    margin-top: 10px;
 }
 
-/* Click counter section styling */
-.counter-section {
-    margin: 40px 0;
+#number-guess-input {
+    padding: 10px;
+    font-size: 1em;
+    border-radius: 5px;
+    margin-top: 10px;
+    width: 200px;
 }
 
-/* Leaderboard containers for both games */
-#rps-leaderboard,
-#click-counter-leaderboard {
-    background-color: #cc0000; /* Darker red background for leaderboard */
-    padding: 20px;
-    border-radius: 10px;
-    margin: 20px auto;
-    max-width: 600px;
-    width: 100%;
-    box-shadow: 0 0 10px rgba(255, 0, 0, 0.3); /* Red shadow effect */
-    text-align: left; /* Align leaderboard text to the left */
+/* Leaderboard Styling */
+.leaderboard-section {
+    margin-top: 30px;
 }
 
-/* Leaderboard text and structure */
-#rps-leaderboard p,
-#click-counter-leaderboard p {
-    color: white; /* White text in leaderboard */
-    margin: 5px 0;
-    padding: 5px;
-    border-bottom: 1px solid #ffcccc; /* Light red border between leaderboard items */
+.leaderboard-section h3 {
+    font-size: 1.8em;
+    margin-bottom: 10px;
 }
 
-/* Footer styling */
-footer {
-    margin-top: 50px;
-    font-size: 1rem;
-    color: white; /* White footer text */
+.leaderboard-section p {
+    font-size: 1.2em;
+}
+
+/* Note Styling */
+#note {
+    font-size: 1.2em;
+    color: #ffcccc;
+    margin-top: 10px;
 }
