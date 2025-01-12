@@ -1,47 +1,60 @@
-// Number Guessing Game Logic
-function submitGuess() {
-    if (!playerNameSet) {
-        playerName = prompt("Enter your name for the Number Guessing Game:");
-        playerNameSet = true;
-    }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock, Paper, Scissors, Click Counter & Number Guessing Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Rock, Paper, Scissors, Click Counter & Number Guessing Game</h1>
 
-    const playerGuess = parseInt(document.getElementById('number-guess-input').value, 10);
-    if (isNaN(playerGuess)) {
-        document.getElementById('number-guess-feedback').innerText = 'Please enter a valid number.';
-        return;
-    }
+    <!-- Rock, Paper, Scissors Game Section -->
+    <div class="game-container">
+        <h2>Rock, Paper, Scissors</h2>
+        <div class="choices">
+            <button onclick="playGame('rock')">Rock</button>
+            <button onclick="playGame('paper')">Paper</button>
+            <button onclick="playGame('scissors')">Scissors</button>
+        </div>
+        <div id="result"></div>
+    </div>
 
-    guessAttempts++;
-    if (playerGuess === numberToGuess) {
-        if (guessAttempts <= 5) {
-            document.getElementById('number-guess-feedback').innerText = `Congratulations ${playerName}! You guessed the number in ${guessAttempts} attempts.`;
-            saveScore('Number Guessing Game', 1);  // Save the win
-        } else {
-            document.getElementById('number-guess-feedback').innerText = `You guessed the number in ${guessAttempts} attempts, but it took more than 5 tries. You lose.`;
-        }
-        resetNumberGuessingGame();
-    } else if (playerGuess < numberToGuess) {
-        document.getElementById('number-guess-feedback').innerText = 'Too low! Try again.';
-    } else {
-        document.getElementById('number-guess-feedback').innerText = 'Too high! Try again.';
-    }
-}
+    <!-- Click Counter Game Section -->
+    <div class="game-container">
+        <h2>Click Counter</h2>
+        <button onclick="increaseCounter()">Click Me!</button>
+        <p id="counter">Clicks: 0</p>
+        <button onclick="resetCounter()">Reset Counter</button>
+        <div id="note">Note: To save your Click Counter score, please click the 'Reset Counter' button.</div>
+    </div>
 
-function resetNumberGuessingGame() {
-    // Reset the game state and number
-    numberToGuess = Math.floor(Math.random() * 100) + 1;  // New random number
-    guessAttempts = 0;  // Reset attempts
-    document.getElementById('number-guess-input').value = '';  // Clear the input field
-}
+    <!-- Number Guessing Game Section -->
+    <div class="game-container">
+        <h2>Number Guessing Game</h2>
+        <p id="number-guess-feedback">Guess a number between 1 and 100!</p>
+        <input type="number" id="number-guess-input" placeholder="Enter your guess" />
+        <button onclick="submitGuess()">Submit Guess</button>
+    </div>
 
-// Load stored data from localStorage when the page loads
-document.addEventListener('DOMContentLoaded', () => {
-    loadClickCount();
-    displayLeaderboard();
+    <!-- Leaderboards Section -->
+    <div class="leaderboard-section">
+        <div id="rps-leaderboard">
+            <h3>Rock, Paper, Scissors Leaderboard</h3>
+            <p>No scores yet!</p>
+        </div>
+        
+        <div id="click-counter-leaderboard">
+            <h3>Click Counter Leaderboard</h3>
+            <p>No scores yet!</p>
+        </div>
+        
+        <div id="number-guess-leaderboard">
+            <h3>Number Guessing Game Leaderboard</h3>
+            <p>No scores yet!</p>
+        </div>
+    </div>
 
-    // Make sure the submit guess button works
-    const submitGuessButton = document.querySelector('button[onclick="submitGuess()"]');
-    if (submitGuessButton) {
-        submitGuessButton.addEventListener('click', submitGuess);
-    }
-});
+    <script src="script.js"></script>
+</body>
+</html>
