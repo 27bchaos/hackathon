@@ -1,156 +1,183 @@
-// Game state
 let clickCount = 0;
-let targetNumber = Math.floor(Math.random() * 100) + 1;
-let rpsScore = 0;
+let playerName = '';
+let playerNameSet = false;
+let numberToGuess = Math.floor(Math.random() * 100) + 1;
+let guessAttempts = 0;
 
-// Initialize leaderboards
-const leaderboards = {
-    rps: [],
-    clicks: [],
-    guesses: []
-};
-
-// Event Listeners
-document.addEventListener('DOMContentLoaded', () => {
-    // Load saved leaderboards
-    const saved = localStorage.getItem('gameLeaderboards');
-    if (saved) {
-        try {
-            const savedData = JSON.parse(saved);
-            Object.assign(leaderboards, savedData);
-        } catch (e) {
-            console.error('Error loading leaderboards:', e);
-            localStorage.removeItem('gameLeaderboards'); // Clear corrupted data
+function getCookie(name) {
+    try {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) {
+            const cookieValue = parts.pop().split(';').shift();
+            return decodeURIComponent(cookieValue);
         }
+        return null;
+    } catch (error) {
+        console.error('Error reading cookie:', error);
+        return null;
     }
-    
-    // Initialize leaderboard displays
-    displayLeaderboards();
-    
-    // Set up click counter button with proper event handling
-    const clickButton = document.getElementById('clickButton');
-    if (clickButton) {
-        clickButton.addEventListener('click', increaseCounter);
-    }
-});
+}
 
-// Rock Paper Scissors Game
+function setCookie(name, value, days) {
+    try {
+        const expires = new Date();
+        expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+        document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires.toUTCString()}; path=/; SameSite=Strict`;
+    } catch (error) {
+        console.error('Error setting cookie:', error);
+    }
+}
+
+function loadClickCount() {
+    const savedClickCount = getCookie('clickCount');
+    if (savedClickCount !== null) {
+        clickCount = parseInt(savedClickCount, 10);
+        if (isNaN(clickCount)) clickCount = 0;
+    }
+    updateCounterDisplay();
+}
+
+function updateCounterDisplay() {
+    document.getElementById('counter').innerText = `Clicks: ${clickCount}`;
+}
+
 function playGame(playerChoice) {
+    if (!playerNameSet) {
+        playerName = prompt("Enter your name for the game:");
+        playerNameSet = true;
+    }
+
     const choices = ['rock', 'paper', 'scissors'];
     const computerChoice = choices[Math.floor(Math.random() * 3)];
-    
-    let result;
+    let result = '';
+
     if (playerChoice === computerChoice) {
-        result = "It's a tie!";
+        result = 'It\'s a tie!';
     } else if (
         (playerChoice === 'rock' && computerChoice === 'scissors') ||
         (playerChoice === 'paper' && computerChoice === 'rock') ||
         (playerChoice === 'scissors' && computerChoice === 'paper')
     ) {
-        result = 'You win!';
-        rpsScore++;
+        result = `You win! ${capitalize(playerChoice)} beats ${capitalize(computerChoice)}.`;
+        saveScore('Rock, Paper, Scissors', 1);
     } else {
-        result = 'Computer wins!';
-        if (rpsScore > 0) {
-            updateLeaderboard('rps', rpsScore);
-            rpsScore = 0;
-        }
+        result = `You lose! ${capitalize(computerChoice)} beats ${capitalize(playerChoice)}.`;
     }
-    
-    const resultElement = document.getElementById('result');
-    if (resultElement) {
-        resultElement.textContent = `You chose ${playerChoice}, computer chose ${computerChoice}. ${result}`;
-    }
+    document.getElementById('result').innerText = `You chose: ${capitalize(playerChoice)}\nComputer chose: ${capitalize(computerChoice)}\n${result}`;
 }
 
-// Click Counter Game
+function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
 function increaseCounter() {
-    clickCount++;
-    const counterElement = document.getElementById('counter');
-    if (counterElement) {
-        counterElement.textContent = `Clicks: ${clickCount}`;
+    if (!playerNameSet) {
+        playerName = prompt("Enter your name for the Click Counter game:");
+        playerNameSet = true;
     }
+
+    clickCount++;
+    updateCounterDisplay();
+    setCookie('clickCount', clickCount.toString(), 7);
+    saveScore('Click Counter', clickCount);
 }
 
 function resetCounter() {
-    if (clickCount > 0) {
-        updateLeaderboard('clicks', clickCount);
-    }
     clickCount = 0;
-    const counterElement = document.getElementById('counter');
-    if (counterElement) {
-        counterElement.textContent = 'Clicks: 0';
-    }
+    updateCounterDisplay();
+    setCookie('clickCount', '0', 7);
 }
 
-// Number Guessing Game
 function submitGuess() {
-    const guessInput = document.getElementById('number-guess-input');
-    const feedback = document.getElementById('number-guess-feedback');
-    
-    if (!guessInput || !feedback) return;
-    
-    const guess = parseInt(guessInput.value);
-    
-    if (isNaN(guess) || guess < 1 || guess > 100) {
-        feedback.textContent = 'Please enter a valid number between 1 and 100';
-        return;
+    if (!playerNameSet) {
+        playerName = prompt("Enter your name for the Number Guessing Game:");
+        playerNameSet = true;
     }
-    
-    if (guess === targetNumber) {
-        feedback.textContent = 'Congratulations! You guessed the number!';
-        updateLeaderboard('guesses', guess);
-        targetNumber = Math.floor(Math.random() * 100) + 1;
-        guessInput.value = '';
-    } else if (guess < targetNumber) {
-        feedback.textContent = 'Too low! Try again.';
+
+    const playerGuess = parseInt(document.getElementById('number-guess-input').value, 10);
+    guessAttempts++;
+
+    if (playerGuess === numberToGuess) {
+        if (guessAttempts <= 5) {
+            document.getElementById('number-guess-feedback').innerText = `Congratulations ${playerName}! You guessed the number in ${guessAttempts} attempts.`;
+            saveScore('Number Guessing Game', 1);
+        } else {
+            document.getElementById('number-guess-feedback').innerText = `You guessed the number in ${guessAttempts} attempts, but it took more than 5 tries. You lose.`;
+        }
+        resetNumberGuessingGame();
+    } else if (playerGuess < numberToGuess) {
+        document.getElementById('number-guess-feedback').innerText = 'Too low! Try again.';
     } else {
-        feedback.textContent = 'Too high! Try again.';
+        document.getElementById('number-guess-feedback').innerText = 'Too high! Try again.';
     }
 }
 
-// Leaderboard Functions
-function updateLeaderboard(game, score) {
-    if (!leaderboards[game]) return;
-    
-    leaderboards[game].push({
-        score: score,
-        date: new Date().toLocaleDateString()
-    });
-    
-    // Sort scores (higher is better)
-    leaderboards[game].sort((a, b) => b.score - a.score);
-    
-    // Keep only top 10 scores
-    if (leaderboards[game].length > 10) {
-        leaderboards[game] = leaderboards[game].slice(0, 10);
-    }
-    
-    // Save to localStorage
-    try {
-        localStorage.setItem('gameLeaderboards', JSON.stringify(leaderboards));
-    } catch (e) {
-        console.error('Error saving leaderboards:', e);
-    }
-    
-    // Update display
-    displayLeaderboards();
+function resetNumberGuessingGame() {
+    numberToGuess = Math.floor(Math.random() * 100) + 1;
+    guessAttempts = 0;
+    document.getElementById('number-guess-input').value = '';
 }
 
-function displayLeaderboards() {
-    const games = ['rps', 'clicks', 'guesses'];
-    games.forEach(game => {
-        const container = document.querySelector(`#${game}-leaderboard .scores`);
-        if (!container) return;
-        
-        container.innerHTML = leaderboards[game] && leaderboards[game].length ? 
-            leaderboards[game].map((entry, index) => `
-                <div class="score-entry">
-                    <span>#${index + 1}</span>
-                    <span>${entry.score}</span>
-                    <span>${entry.date}</span>
-                </div>
-            `).join('') :
-            '<p>No scores yet!</p>';
-    });
+function saveScore(game, score) {
+    if (!playerNameSet) return;
+
+    let savedScores = {};
+    const savedScoresStr = getCookie('scores');
+    if (savedScoresStr) {
+        savedScores = JSON.parse(savedScoresStr);
+    }
+
+    if (!savedScores[game]) {
+        savedScores[game] = [];
+    }
+
+    const playerIndex = savedScores[game].findIndex(
+        player => player.playerName.toLowerCase() === playerName.toLowerCase()
+    );
+
+    if (playerIndex !== -1) {
+        savedScores[game][playerIndex].score += score;
+    } else {
+        savedScores[game].push({ playerName: playerName.trim(), score });
+    }
+
+    savedScores[game].sort((a, b) => b.score - a.score);
+    if (savedScores[game].length > 10) {
+        savedScores[game] = savedScores[game].slice(0, 10);
+    }
+
+    setCookie('scores', JSON.stringify(savedScores), 7);
+    displayLeaderboard();
 }
+
+function displayLeaderboard() {
+    const savedScoresStr = getCookie('scores');
+    const savedScores = savedScoresStr ? JSON.parse(savedScoresStr) : {};
+
+    const rpsScores = savedScores['Rock, Paper, Scissors'] || [];
+    document.getElementById('rps-leaderboard').innerHTML = `<h3>Rock, Paper, Scissors Leaderboard</h3>${
+        rpsScores.length > 0
+            ? rpsScores.map((player, i) => `<p>${i + 1}. ${player.playerName}: ${player.score} wins</p>`).join('')
+            : '<p>No scores yet!</p>'
+    }`;
+
+    const clickCounterScores = savedScores['Click Counter'] || [];
+    document.getElementById('click-counter-leaderboard').innerHTML = `<h3>Click Counter Leaderboard</h3>${
+        clickCounterScores.length > 0
+            ? clickCounterScores.map((player, i) => `<p>${i + 1}. ${player.playerName}: ${player.score} clicks</p>`).join('')
+            : '<p>No scores yet!</p>'
+    }`;
+
+    const numberGuessScores = savedScores['Number Guessing Game'] || [];
+    document.getElementById('number-guess-leaderboard').innerHTML = `<h3>Number Guessing Game Leaderboard</h3>${
+        numberGuessScores.length > 0
+            ? numberGuessScores.map((player, i) => `<p>${i + 1}. ${player.playerName}: ${player.score} wins</p>`).join('')
+            : '<p>No scores yet!</p>'
+    }`;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadClickCount();
+    displayLeaderboard();
+});
