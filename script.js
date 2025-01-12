@@ -5,6 +5,7 @@ let numberToGuess = Math.floor(Math.random() * 100) + 1;
 let guessAttempts = 0;
 const maxGuessAttempts = 10; // Max attempts for Number Guessing Game
 let rpsWins = 0;  // Track Rock, Paper, Scissors Wins
+let numberGuessWins = 0; // Track Number Guessing Wins
 
 // Get a cookie by name
 function getCookie(name) {
@@ -116,8 +117,9 @@ function submitGuess() {
     guessAttempts++;
     if (playerGuess === numberToGuess) {
         if (guessAttempts <= maxGuessAttempts) {
+            numberGuessWins++; // Increment number guessing wins
             document.getElementById('number-guess-feedback').innerText = `Congratulations ${playerName}! You guessed the number in ${guessAttempts} attempts.`;
-            saveScore('Number Guessing Game', 1);  // Save win to leaderboard
+            saveScore('Number Guessing Game', numberGuessWins); // Save score to leaderboard
         } else {
             document.getElementById('number-guess-feedback').innerText = `You guessed the number in ${guessAttempts} attempts, but it took more than 10 tries. You lose.`;
         }
