@@ -1,6 +1,9 @@
+// Global Variables
 let clickCount = 0;
 let playerName = '';
 let playerNameSet = false;
+let targetNumber = 0; // For Number Guessing Game
+let attempts = 0; // Track attempts in the Number Guessing Game
 
 function getCookie(name) {
     try {
@@ -40,33 +43,36 @@ function updateCounterDisplay() {
     document.getElementById('counter').innerText = `Clicks: ${clickCount}`;
 }
 
-function playGame(playerChoice) {
+// Number Guessing Game Logic
+function startNumberGuessingGame() {
     if (!playerNameSet) {
-        playerName = prompt("Enter your name for the game:");
+        playerName = prompt("Enter your name for the Number Guessing Game:");
         playerNameSet = true;
     }
 
-    const choices = ['rock', 'paper', 'scissors'];
-    const computerChoice = choices[Math.floor(Math.random() * 3)];
-    let result = '';
-
-    if (playerChoice === computerChoice) {
-        result = 'It\'s a tie!';
-    } else if (
-        (playerChoice === 'rock' && computerChoice === 'scissors') ||
-        (playerChoice === 'paper' && computerChoice === 'rock') ||
-        (playerChoice === 'scissors' && computerChoice === 'paper')
-    ) {
-        result = `You win! ${capitalize(playerChoice)} beats ${capitalize(computerChoice)}.`;
-        saveScore('Rock, Paper, Scissors', 1);
-    } else {
-        result = `You lose! ${capitalize(computerChoice)} beats ${capitalize(playerChoice)}.`;
-    }
-    document.getElementById('result').innerText = `You chose: ${capitalize(playerChoice)}\nComputer chose: ${capitalize(computerChoice)}\n${result}`;
+    targetNumber = Math.floor(Math.random() * 100) + 1; // Random number between 1 and 100
+    attempts = 0;
+    document.getElementById('number-guess-feedback').innerText = 'Guess a number between 1 and 100!';
+    document.getElementById('number-guess-input').value = '';
 }
 
-function capitalize(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
+function submitGuess() {
+    const guess = parseInt(document.getElementById('number-guess-input').value, 10);
+    if (isNaN(guess)) {
+        document.getElementById('number-guess-feedback').innerText = 'Please enter a valid number!';
+        return;
+    }
+
+    attempts++;
+    if (guess === targetNumber) {
+        document.getElementById('number-guess-feedback').innerText = `Correct! The number was ${targetNumber}. You guessed it in ${attempts} attempts.`;
+        saveScore('Number Guessing Game', 100 - attempts); // Higher score for fewer attempts
+        startNumberGuessingGame(); // Start a new game
+    } else if (guess < targetNumber) {
+        document.getElementById('number-guess-feedback').innerText = 'Too Low! Try again.';
+    } else {
+        document.getElementById('number-guess-feedback').innerText = 'Too High! Try again.';
+    }
 }
 
 function increaseCounter() {
@@ -78,7 +84,7 @@ function increaseCounter() {
     clickCount++;
     updateCounterDisplay();
     setCookie('clickCount', clickCount.toString(), 7);
-    saveScore('Click Counter', clickCount, true); // Ensure Click Counter matches
+    saveScore('Click Counter', clickCount, true);
 }
 
 function resetCounter() {
@@ -108,7 +114,7 @@ function saveScore(game, score, isOverwrite = false) {
 
         if (playerIndex !== -1) {
             if (isOverwrite) {
-                savedScores[game][playerIndex].score = score; // Overwrite for Click Counter
+                savedScores[game][playerIndex].score = score;
             } else {
                 savedScores[game][playerIndex].score += score;
             }
@@ -157,6 +163,17 @@ function displayLeaderboard() {
             clickCounterLeaderboardHTML += '<p>No scores yet!</p>';
         }
         document.getElementById('click-counter-leaderboard').innerHTML = clickCounterLeaderboardHTML;
+
+        const numberGuessScores = savedScores['Number Guessing Game'] || [];
+        let numberGuessLeaderboardHTML = '<h3>Number Guessing Game Leaderboard</h3>';
+        if (numberGuessScores.length > 0) {
+            numberGuessLeaderboardHTML += numberGuessScores
+                .map((player, index) => `<p>${index + 1}. ${player.playerName}: ${player.score} points</p>`)
+                .join('');
+        } else {
+            numberGuessLeaderboardHTML += '<p>No scores yet!</p>';
+        }
+        document.getElementById('number-guess-leaderboard').innerHTML = numberGuessLeaderboardHTML;
     } catch (error) {
         console.error('Error displaying leaderboard:', error);
     }
@@ -165,4 +182,5 @@ function displayLeaderboard() {
 document.addEventListener('DOMContentLoaded', () => {
     loadClickCount();
     displayLeaderboard();
+    startNumberGuessingGame();
 });
