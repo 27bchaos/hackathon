@@ -94,6 +94,7 @@ function resetCounter() {
     clickCount = 0;
     updateCounterDisplay();
     setCookie('clickCount', '0', 7);
+    displayLeaderboard(); // Ensure the leaderboard is updated after reset
 }
 
 // Number Guessing Game Logic
