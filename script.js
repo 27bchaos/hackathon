@@ -3,6 +3,7 @@ let playerName = '';
 let playerNameSet = false;
 let numberToGuess = Math.floor(Math.random() * 100) + 1;
 let guessAttempts = 0;
+const maxGuessAttempts = 10; // Max attempts for Number Guessing Game
 let rpsWins = 0;  // Track Rock, Paper, Scissors Wins
 
 // Get a cookie by name
@@ -114,17 +115,22 @@ function submitGuess() {
 
     guessAttempts++;
     if (playerGuess === numberToGuess) {
-        if (guessAttempts <= 5) {
+        if (guessAttempts <= maxGuessAttempts) {
             document.getElementById('number-guess-feedback').innerText = `Congratulations ${playerName}! You guessed the number in ${guessAttempts} attempts.`;
             saveScore('Number Guessing Game', 1);  // Save win to leaderboard
         } else {
-            document.getElementById('number-guess-feedback').innerText = `You guessed the number in ${guessAttempts} attempts, but it took more than 5 tries. You lose.`;
+            document.getElementById('number-guess-feedback').innerText = `You guessed the number in ${guessAttempts} attempts, but it took more than 10 tries. You lose.`;
         }
         resetNumberGuessingGame();
     } else if (playerGuess < numberToGuess) {
         document.getElementById('number-guess-feedback').innerText = 'Too low! Try again.';
     } else {
         document.getElementById('number-guess-feedback').innerText = 'Too high! Try again.';
+    }
+
+    if (guessAttempts >= maxGuessAttempts) {
+        document.getElementById('number-guess-feedback').innerText = `Sorry, you've exceeded the maximum number of attempts. The correct number was ${numberToGuess}.`;
+        resetNumberGuessingGame();
     }
 }
 
