@@ -3,76 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Collection</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            text-align: center;
-        }
-        h1 {
-            background-color: #4CAF50;
-            color: white;
-            margin: 0;
-            padding: 15px;
-        }
-        .game {
-            margin: 20px auto;
-            padding: 15px;
-            border: 1px solid #ddd;
-            width: 90%;
-            max-width: 600px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-        button {
-            padding: 10px 20px;
-            margin: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        .leaderboard {
-            margin-top: 20px;
-        }
-    </style>
+    <title>Rock, Paper, Scissors & Click Counter Game</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Game Collection</h1>
+    <h1>Rock, Paper, Scissors & Click Counter</h1>
 
-    <div class="game">
+    <!-- Rock, Paper, Scissors Game Section -->
+    <div class="game-container">
+        <h2>Rock, Paper, Scissors</h2>
+        <div class="choices">
+            <button onclick="playGame('rock')">Rock</button>
+            <button onclick="playGame('paper')">Paper</button>
+            <button onclick="playGame('scissors')">Scissors</button>
+        </div>
+        <div id="result"></div>
+    </div>
+
+    <!-- Click Counter Game Section -->
+    <div class="game-container">
         <h2>Click Counter</h2>
+        <button onclick="increaseCounter()">Click Me!</button>
         <p id="counter">Clicks: 0</p>
-        <button onclick="increaseCounter()">Click Me</button>
         <button onclick="resetCounter()">Reset Counter</button>
     </div>
 
-    <div class="game">
-        <h2>Rock, Paper, Scissors</h2>
-        <p id="result">Choose an option to play:</p>
-        <button onclick="playGame('rock')">Rock</button>
-        <button onclick="playGame('paper')">Paper</button>
-        <button onclick="playGame('scissors')">Scissors</button>
+    <!-- Leaderboards Section -->
+    <div class="leaderboard-section">
+        <div id="rps-leaderboard">
+            <h3>Rock, Paper, Scissors Leaderboard</h3>
+            <p>No scores yet!</p>
+        </div>
+        
+        <div id="click-counter-leaderboard">
+            <h3>Click Counter Leaderboard</h3>
+            <p>No scores yet!</p>
+        </div>
     </div>
-
-    <div class="game">
-        <h2>Counting Game</h2>
-        <p id="counting-display">Current Number: 1</p>
-        <button onclick="startCountingGame()">Start Game</button>
-        <input type="number" id="counting-input" placeholder="Enter the next number">
-        <button onclick="countNextNumber(parseInt(document.getElementById('counting-input').value))">Submit</button>
-        <p id="counting-result"></p>
-    </div>
-
-    <div class="leaderboard" id="rps-leaderboard"></div>
-    <div class="leaderboard" id="click-counter-leaderboard"></div>
-    <div class="leaderboard" id="counting-leaderboard"></div>
 
     <script src="script.js"></script>
 </body>
