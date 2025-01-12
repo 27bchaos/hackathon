@@ -17,7 +17,16 @@
             <button onclick="playGame('paper')">Paper</button>
             <button onclick="playGame('scissors')">Scissors</button>
         </div>
-        <div id="rps-result"></div>
+        <div id="result"></div>
+    </div>
+
+    <!-- Click Counter Game Section -->
+    <div class="game-container">
+        <h2>Click Counter</h2>
+        <button onclick="increaseCounter()">Click Me!</button>
+        <p id="counter">Clicks: 0</p>
+        <button onclick="resetCounter()">Reset Counter</button>
+        <p id="click-note">* Click "Reset Counter" to save your score</p>
     </div>
 
     <!-- Number Guessing Game Section -->
@@ -26,16 +35,24 @@
         <p id="number-guess-feedback">Guess a number between 1 and 100!</p>
         <input type="number" id="number-guess-input" placeholder="Enter your guess" />
         <button onclick="submitGuess()">Submit Guess</button>
-        <div id="number-guess-result"></div>
     </div>
 
-    <!-- Click Counter Game Section -->
-    <div class="game-container">
-        <h2>Click Counter</h2>
-        <button id="clickButton">Click Me!</button>
-        <p id="counter">Clicks: 0</p>
-        <button onclick="resetCounter()">Reset Counter</button>
-        <div id="click-note">Note: To save your Click Counter score, please click the 'Reset Counter' button.</div>
+    <!-- Leaderboards Section -->
+    <div class="leaderboard-section">
+        <div id="rps-leaderboard">
+            <h3>Rock, Paper, Scissors Leaderboard</h3>
+            <p>No scores yet!</p>
+        </div>
+        
+        <div id="click-counter-leaderboard">
+            <h3>Click Counter Leaderboard</h3>
+            <p>No scores yet!</p>
+        </div>
+        
+        <div id="number-guess-leaderboard">
+            <h3>Number Guessing Game Leaderboard</h3>
+            <p>No scores yet!</p>
+        </div>
     </div>
 
     <script src="script.js"></script>
