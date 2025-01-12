@@ -205,4 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
         clickButton.removeEventListener('click', increaseCounter);
         clickButton.addEventListener('click', increaseCounter);
     }
+
+    // Update leaderboard every 5 seconds
+    setInterval(displayLeaderboard, 5000); // Update every 5 seconds
 });
