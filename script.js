@@ -3,7 +3,7 @@ let playerName = '';
 let playerNameSet = false;
 let numberToGuess = Math.floor(Math.random() * 100) + 1;
 let guessAttempts = 0;
-let isClickSubmitted = false;  // Ensure no multiple increments
+let isClickSubmitted = false;  // Prevent multiple increments for Click Counter
 
 // Get a cookie by name
 function getCookie(name) {
@@ -86,13 +86,13 @@ function increaseCounter() {
         playerNameSet = true;
     }
 
-    // Allow increment only if the counter hasn't been submitted yet
+    // Prevent further increment after the first click for the current game session
     if (!isClickSubmitted) {
         clickCount++;
         updateCounterDisplay();
         setCookie('clickCount', clickCount.toString(), 7);
-        saveScore('Click Counter', clickCount); // Only submit the score after click
-        isClickSubmitted = true;  // Prevent further increments until reset
+        saveScore('Click Counter', 1);  // Ensure we only save 1 point to leaderboard
+        isClickSubmitted = true;  // Mark as submitted so no further increments happen
     }
 }
 
@@ -117,11 +117,11 @@ function submitGuess() {
     if (playerGuess === numberToGuess) {
         if (guessAttempts <= 5) {
             document.getElementById('number-guess-feedback').innerText = `Congratulations ${playerName}! You guessed the number in ${guessAttempts} attempts.`;
-            saveScore('Number Guessing Game', 1);
+            saveScore('Number Guessing Game', 1);  // Only save score after a correct guess within limit
         } else {
             document.getElementById('number-guess-feedback').innerText = `You guessed the number in ${guessAttempts} attempts, but it took more than 5 tries. You lose.`;
         }
-        resetNumberGuessingGame();
+        resetNumberGuessingGame();  // Reset the game after a guess
     } else if (playerGuess < numberToGuess) {
         document.getElementById('number-guess-feedback').innerText = 'Too low! Try again.';
     } else {
@@ -162,7 +162,7 @@ function saveScore(game, score) {
 
     savedScores[game].sort((a, b) => b.score - a.score);
     if (savedScores[game].length > 10) {
-        savedScores[game] = savedScores[game].slice(0, 10);
+        savedScores[game] = savedScores[game].slice(0, 10);  // Limit to top 10 scores
     }
 
     setCookie('scores', JSON.stringify(savedScores), 7);
@@ -174,6 +174,7 @@ function displayLeaderboard() {
     const savedScoresStr = getCookie('scores');
     const savedScores = savedScoresStr ? JSON.parse(savedScoresStr) : {};
 
+    // Display Rock Paper Scissors leaderboard
     const rpsScores = savedScores['Rock, Paper, Scissors'] || [];
     document.getElementById('rps-leaderboard').innerHTML = `<h3>Rock, Paper, Scissors Leaderboard</h3>${
         rpsScores.length > 0
@@ -181,6 +182,7 @@ function displayLeaderboard() {
             : '<p>No scores yet!</p>'
     }`;
 
+    // Display Click Counter leaderboard
     const clickCounterScores = savedScores['Click Counter'] || [];
     document.getElementById('click-counter-leaderboard').innerHTML = `<h3>Click Counter Leaderboard</h3>${
         clickCounterScores.length > 0
@@ -188,6 +190,7 @@ function displayLeaderboard() {
             : '<p>No scores yet!</p>'
     }`;
 
+    // Display Number Guessing leaderboard
     const numberGuessScores = savedScores['Number Guessing Game'] || [];
     document.getElementById('number-guess-leaderboard').innerHTML = `<h3>Number Guessing Game Leaderboard</h3>${
         numberGuessScores.length > 0
