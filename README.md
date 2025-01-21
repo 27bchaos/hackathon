@@ -1,1 +1,1 @@
-https://workblog.me
+https://my.workblog.me
